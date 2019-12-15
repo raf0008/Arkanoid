@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainMenu">
+
+    <Button
+        android:id="@+id/newGame"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="startGame"
+        android:text="New Game"
+        app:layout_constraintBottom_toTopOf="@+id/levels"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/levels"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="60dp"
+        android:layout_marginLeft="60dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="selectLevel"
+        android:text="Levels"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/continueGame"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginStart="36dp"
+        android:layout_marginLeft="36dp"
+        android:layout_marginBottom="91dp"
+        android:onClick="continueGame"
+        android:text="Continue"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toEndOf="@+id/newGame" />
+
+    <Button
+        android:id="@+id/highScore"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="highScoreView"
+        android:text="High Score"
+        app:layout_constraintBottom_toTopOf="@+id/exit"
+        app:layout_constraintEnd_toEndOf="parent" />
+
+    <Button
+        android:id="@+id/exit"
+        android:layout_width="139dp"
+        android:layout_height="43dp"
+        android:layout_marginEnd="60dp"
+        android:layout_marginRight="60dp"
+        android:layout_marginBottom="24dp"
+        android:onClick="exitApp"
+        android:text="Exit"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+</androidx.constraintlayout.widget.ConstraintLayout>
