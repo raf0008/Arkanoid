@@ -4,15 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@drawable/space"
     tools:context=".High_score">
-
-    <RelativeLayout
-        android:id="@+id/rootRL"
-        android:orientation="vertical"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:background="@drawable/space"
-        />
 
     <ListView
         android:id="@+id/list"
@@ -36,14 +29,13 @@
         app:layout_constraintStart_toEndOf="@+id/list"
         app:layout_constraintTop_toTopOf="parent" />
 
-
     <Button
         android:id="@+id/mainMenu"
         android:layout_width="214dp"
         android:layout_height="46dp"
         android:layout_marginBottom="36dp"
         android:text="Main Menu"
-        android:textColor="@drawable/text_button_color_option"
+        android:textColor="@color/text_button_color_option"
         android:background="@drawable/transparent_bg_bordered_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

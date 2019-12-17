@@ -44,10 +44,10 @@ public class MainMenu extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", 0);
+        SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
 
-        String maxLevel = pref.getString("maxLevel","0");
+        String maxLevel = pref.getString("maxLevel","1");
         int highestLevel = Integer.parseInt(maxLevel);
         if(highestLevel > 0){
             button_levels.setEnabled(true);
@@ -68,7 +68,7 @@ public class MainMenu extends AppCompatActivity {
             button_continue.setVisibility(View.INVISIBLE);
         }
 
-        String highScore = pref.getString("highscore","0");
+        String highScore = pref.getString("level1","0");
         int highestScore = 1;// Integer.parseInt(highScore);
         if(highestScore > 0){
             button_highscore.setEnabled(true);
@@ -91,12 +91,12 @@ public class MainMenu extends AppCompatActivity {
 
     public void selectLevel(View view){
        // Intent intent = new Intent(this, Level.class);
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this, LevelSelection.class);
         startActivity(intent);
     }
 
     public void continueGame(View view){
-        Intent intent = new Intent(this, MainActivity.class);
+        Intent intent = new Intent(this,MainActivity.class);
         intent.putExtra("newGame",false);
         startActivity(intent);
     }
@@ -104,6 +104,7 @@ public class MainMenu extends AppCompatActivity {
     public void highScoreView(View view){
         //Intent intent = new Intent(this, HighScore.class);
         Intent intent = new Intent(this, High_score.class);
+        intent.putExtra("levelCount",6);
         startActivity(intent);
     }
 

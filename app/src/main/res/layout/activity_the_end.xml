@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/space"
+    tools:context=".TheEnd">
+
+    <TextView
+        android:id="@+id/victory"
+        android:layout_width="600dp"
+        android:layout_height="170dp"
+        android:text="Victory"
+        android:textAlignment="center"
+        android:textAllCaps="true"
+        android:textColor="#73FFFFFF"
+        android:textSize="85dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_bias="0.429" />
+
+    <Button
+        android:id="@+id/nextLevel"
+        android:layout_width="139dp"
+        android:layout_height="48dp"
+        android:layout_marginEnd="120dp"
+        android:onClick="nextLevel"
+        android:text="Next level"
+        android:textColor="@color/text_button_color_option"
+        android:background="@drawable/transparent_bg_bordered_button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/victory" />
+
+    <Button
+        android:id="@+id/mainMenuGameOverButton"
+        android:layout_width="139dp"
+        android:layout_height="48dp"
+
+        android:layout_marginEnd="24dp"
+        android:background="@drawable/transparent_bg_bordered_button"
+        android:onClick="MainMenu"
+        android:text="Main Menu"
+        android:textColor="@color/text_button_color_option"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toStartOf="@+id/nextLevel"
+        app:layout_constraintTop_toBottomOf="@+id/victory"
+        app:layout_constraintVertical_bias="0.494" />
+
+    <TextView
+        android:id="@+id/score"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="92dp"
+        android:layout_marginBottom="136dp"
+        android:text="Your Level 1 Score: 3000 (NEW RECORD)"
+        android:textAllCaps="true"
+        android:textColor="#73FFFFFF"
+        android:textSize="20dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

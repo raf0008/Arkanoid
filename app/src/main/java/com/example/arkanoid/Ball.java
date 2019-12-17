@@ -42,6 +42,7 @@ public class Ball {
         xVelocity = -xVelocity;
     }
 
+
     public void setRandomXVelocity(){
         Random rand = new Random();
         int ans = rand.nextInt(2);
@@ -71,6 +72,29 @@ public class Ball {
         ball.top = y - 40;
         ball.right = x / 2 + ballWidth;
         ball.bottom = y - 40 - ballHeight;
+    }
+
+    public void setPosition(int left, int right, int top, int bottom){
+        ball.left = left;
+        ball.right = right;
+        ball.top = top;
+        ball.bottom = bottom;
+    }
+
+    public void setxVelocity(float xVelocity){
+        this.xVelocity = xVelocity;
+    }
+
+    public void setyVelocity(float yVelocity){
+        this.yVelocity = yVelocity;
+    }
+
+    public float getxVelocity() {
+        return xVelocity;
+    }
+
+    public float getyVelocity(){
+        return yVelocity;
     }
 
     public int getRadius(){

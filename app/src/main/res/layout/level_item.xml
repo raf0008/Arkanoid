@@ -5,16 +5,18 @@
 
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textView1"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:text="Level 1"
+        android:textColor="@color/blue"
         android:textSize="24sp" />
 
     <TextView
         android:id="@+id/textView2"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:textColor="@color/blue"
         android:text="High Score: 1000" />
 
     <TextView
@@ -22,5 +24,6 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:paddingBottom="20dp"
+        android:textColor="@color/blue"
         android:text="Date: 12/15/2019 1:10 AM" />
 </LinearLayout>

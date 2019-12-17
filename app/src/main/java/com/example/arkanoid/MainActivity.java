@@ -4,6 +4,7 @@ import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.content.pm.ActivityInfo;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -29,6 +30,8 @@ import android.view.SurfaceView;
 import android.view.WindowManager;
 import android.widget.TextView;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 public class MainActivity extends AppCompatActivity implements SensorEventListener {
@@ -37,6 +40,16 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int bounce;
     int deadend;
     int destruction;
+    int realScore = 0;
+    int selectedLevel;
+    int levelCount;
+
+    long startTime;
+
+    boolean newGame;
+     //continuePref; // = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+
+    //
 
     boolean touched = false;
 
@@ -53,6 +66,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         // setContentView(R.layout.activity_main);
 
         // textView = (TextView)findViewById(R.id.text);
+
+
     }
 
     @Override
@@ -74,29 +89,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         if(newGame) textView.setText("New Game");
         else textView.setText("Continue");
     }*/
-
-    public static int calculateInSampleSize(
-            BitmapFactory.Options options, int reqWidth, int reqHeight) {
-        // Raw height and width of image
-        final int height = options.outHeight;
-        final int width = options.outWidth;
-        int inSampleSize = 1;
-
-        if (height > reqHeight || width > reqWidth) {
-
-            final int halfHeight = height / 2;
-            final int halfWidth = width / 2;
-
-            // Calculate the largest inSampleSize value that is a power of 2 and keeps both
-            // height and width larger than the requested height and width.
-            while ((halfHeight / inSampleSize) >= reqHeight
-                    && (halfWidth / inSampleSize) >= reqWidth) {
-                inSampleSize *= 2;
-            }
-        }
-
-        return inSampleSize;
-    }
 
     private class ArkanoidView extends SurfaceView implements Runnable, SensorEventListener {
 
@@ -126,11 +118,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         Paddle paddle;
         Ball ball;
 
-        Brick[] bricks = new Brick[100];
+        Brick[] bricks = new Brick[200];
         int brickCount = 0;
         int brickLifeCount = 0;
-
-        //private boolean ballStopped = true;
 
         int brickWidth;
         int brickHeight;
@@ -151,20 +141,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             deadend = soundPool.load(getContext(), R.raw.deadend, 1);
             destruction = soundPool.load(getContext(), R.raw.destruction, 1);
 
-        //    setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
-       //     setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LOCKED);
 
             sensorManager = (SensorManager) getSystemService(Context.SENSOR_SERVICE);
             accelerometer = sensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
             sensorManager.registerListener((SensorEventListener) ArkanoidView.this, accelerometer, SensorManager.SENSOR_DELAY_GAME);
 
-            //play = false;
             paused = true;
 
-
-
-        //    background = BitmapFactory.decodeResource(getResources(), R.drawable.space);
-           // background = Bitmap.createScaledBitmap(bitmap, screenX, screenY, true);
+            newGame = getIntent().getBooleanExtra("newGame", true);
+            if(newGame)Log.d("Game session","New Game");
+            else Log.d("Game session", "Continuing Game");
 
             surfHolder = getHolder();
             paint = new Paint();
@@ -179,15 +167,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.space);
             background = Bitmap.createScaledBitmap(bitmap, screenX, screenY, true);
 
-         /*   BitmapFactory.Options options = new BitmapFactory.Options();
-            options.inJustDecodeBounds = true;
-            BitmapFactory.decodeResource(getResources(), R.drawable.space, options);
-
-            options.inSampleSize = calculateInSampleSize(options, screenX,screenY);
-            options.inJustDecodeBounds = false;
-            background = BitmapFactory.decodeResource(getResources(), R.drawable.space, options);*/
-
-
             brickWidth = screenX / 8;
             brickHeight = screenY / 10;
 
@@ -200,19 +179,58 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         }
 
         public void createBricksAndRestart() {
-            ball.reset(screenX, screenY);
+            if(newGame){
+                ball.reset(screenX, screenY);
+            }
+            else{
+
+
+             //   SharedPreferences continuePref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+             //   Log.d("SHARED", "Left" + continuePref.getFloat("BallLeft",a));
+               // float left = continuePref.getFloat("BallLeft",200);
+               /* ball.getBall().right = continuePref.getFloat("BallRight",0);
+                ball.getBall().top = continuePref.getFloat("BallTop",0);
+                ball.getBall().bottom = continuePref.getFloat("BallBottom",0);
+
+                ball.setxVelocity(continuePref.getFloat("BallVelocityX",0));
+                ball.setyVelocity(continuePref.getFloat("BallVelocityY",0));
+
+                paddle.getPaddle().left = continuePref.getFloat("PaddleLeft",0);
+                paddle.getPaddle().right = continuePref.getFloat("PaddleRight",0);
+                paddle.getPaddle().top = continuePref.getFloat("PaddleTop",0);
+                paddle.getPaddle().bottom = continuePref.getFloat("PaddleBottom",0);*/
+
+            }
+
             int width = screenX / 10;
             int height = screenY / 12;
 
             Random rand = new Random();
             int life;
 
+
+            selectedLevel = getIntent().getIntExtra("levelSelected",8);
+
+       /*     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+
+            editor.putInt("lastSelectedLevel",selectedLevel);
+            editor.apply();*/
+
+
+            String map; // = "000200200000111111000114114110111111111110100001010001001000";
+
+            Map mapa = new Map();
+            List<String> newMap = mapa.getMap();
+            levelCount = newMap.size();
+
+            map = newMap.get(selectedLevel-1);
+
             brickCount = 0;
             for (int column = 0; column < 10; column++) {
-                for (int row = 0; row < 5; row++) {
-                    life = rand.nextInt(3)-1; //5 +1
-                  //  life = 5 - row;
-                    if(life < 0) life = 0;
+                for (int row = 0; row < 6; row++) {
+
+                    life = Integer.parseInt(Character.toString(map.charAt((row*10)+column)));
                     brickLifeCount = brickLifeCount + life;
                     bricks[brickCount] = new Brick(row, column, width, height, life);
                     if(life == 0) bricks[brickCount].setInvisible();
@@ -234,6 +252,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 if(!paused){
                     update();
+
+                    SharedPreferences continuePref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+                    SharedPreferences.Editor editorC = continuePref.edit();
+
+                    editorC.putFloat("BallLeft",ball.getBall().left);
+                    editorC.putFloat("BallRight",ball.getBall().right);
+                    editorC.putFloat("BallTop",ball.getBall().top);
+                    editorC.putFloat("BallBottom",ball.getBall().bottom);
+
+                    editorC.putFloat("BallVelocityX",ball.getxVelocity());
+                    editorC.putFloat("BallVelocityY",ball.getyVelocity());
+
+                    editorC.putFloat("PaddleLeft",paddle.getPaddle().left);
+                    editorC.putFloat("PaddleRight",paddle.getPaddle().right);
+                    editorC.putFloat("PaddleTop",paddle.getPaddle().top);
+                    editorC.putFloat("PaddleBottom",paddle.getPaddle().bottom);
+
+                    editorC.apply();
                 }
 
                 draw();
@@ -251,53 +287,65 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 ball.update(fps);
             }
 
+
+            String s = "";
             for (int i = 0; i < brickCount; i++) {
                 if (bricks[i].getVisibility()) {
                     if (RectF.intersects(bricks[i].getBrick(), ball.getBall())) {
+
+                        //SharedPreferences StringBuilder(lives of bricks --> map)
+
                         playBounceSound();
                         if(bricks[i].getLives() == 1) bricks[i].setInvisible();
                         else bricks[i].lostLife();
 
-                        ball.reverseYVelocity();
-                        score = score + 1;
 
-                        if(score == brickLifeCount){
+
+                        ball.reverseYVelocity();
+                        score = score + 10;
+
+                        if(score == brickLifeCount*10){
                             paused = true;
                             paddle.reset(screenX,screenY);
-                            setContentView(R.layout.activity_main);
+                            realScore = realScore + score + score * 100000 / ((int)(System.currentTimeMillis() - startTime));
+                            Intent intent = new Intent(getContext(), TheEnd.class);
+                            intent.putExtra("victory",true);
+                            intent.putExtra("score",realScore);
+                            intent.putExtra("nextLevel",selectedLevel+1);
+                            intent.putExtra("levelCount",levelCount);
+                            startActivity(intent);
                         }
-                       /* if (score == 4 || score == 48 || score == 72 || score == 96 || score == 120 || score == 144 || score == 168 || score == 192 || score == 216)
-                        {
-                            lives = lives + 2;
-                            paused = true;
-                            createBricksAndRestart();
-                            paddle.reset(screenX,screenY);
-                        }*/
                     }
                 }
+                s += bricks[i].getLives();
             }
+
+       //     editorC.putString("continueMap",s);
+       //     editorC.apply();
+
+         /*   SharedPreferences pref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+            SharedPreferences.Editor editor = pref.edit();
+
+            editor.putString("continueMap",s);
+            editor.apply();*/
 
             // Kontrola kdy se míč dotkne paddle
             if (RectF.intersects(paddle.getPaddle(), ball.getBall())) {
                 playBounceSound();
+               // if(ball.)
                 ball.setRandomXVelocity();
                 ball.reverseYVelocity();
                 //ball.BallDirection(ball,paddle);
                 ball.clearObstacleY(paddle.getPaddle().top - 2);
             }
 
-           /* if (RectF.intersects(obstruction.getRect(), ball.getRect())) {
-                //ball.setRandomXVelocity();
-                ball.reverseYVelocity();
-                ball.BallDirection(ball,obstruction);
-                ball.clearObstacleY(obstruction.getRect().top - 2);
-            }*/
-
 
             // Pokud se míč dotkne země
             if (ball.getBall().bottom > screenY) {
                 playDestructionSound();
                 paused = true;
+                realScore = realScore + score + score * 100000 / ((int)(System.currentTimeMillis() - startTime));
+
                 // hráč ztratí život, hra se stopne a obnoví se pozice míčku a paddlu
                 lives--;
                 ball.reset(screenX,screenY);
@@ -306,14 +354,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 // pokud jsou životy rovny 0 tak se hra stopne a obnoví se vše.
                 if (lives == 0) {
                     paused = true;
-
-                    String Hscore = Integer.toString(score);
-                    Intent intent = new Intent(getContext(), MainMenu.class);
-                    intent.putExtra("highscore", Hscore);
-                    startActivity(intent);
                 }
-
-
             }
 
             // vrchní zeď odraz
@@ -402,18 +443,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 // skore
                 paint.setTextSize(40);
-                canvas.drawText("Score: " + score + "   Lives: " + lives, 10, screenY - 50, paint);
+                canvas.drawText("Score: " + score + "   Lives: " + lives + " Level: " + selectedLevel, 10, screenY - 50, paint);
 
-                // Pokud hráč vyhrál ( zničil všechny kostky )
-                if (score == brickLifeCount * 10) {
-                    paint.setTextSize(90);
-                    canvas.drawText("You Win!", 10, screenY / 2, paint);
-                }
 
-                // Pokud hráč prohrál
                 if (lives <= 0) {
-                    paint.setTextSize(90);
-                    canvas.drawText("You loose!", 10, screenY / 2, paint);
+                    Intent intent = new Intent(getContext(), TheEnd.class);
+                    intent.putExtra("victory", false);
+                    intent.putExtra("score",score);
+                    startActivity(intent);
+
                 }
 
                 surfHolder.unlockCanvasAndPost(canvas);
@@ -426,13 +464,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             switch (event.getAction() & MotionEvent.ACTION_MASK){
                 case MotionEvent.ACTION_DOWN:
                     paused = false;
+                    if(ballStopped){
+                        startTime = System.currentTimeMillis();
+                    }
                     if(event.getX() > screenX/2){
                         ballStopped = false;
-                        paddle.setMoving(paddle.right);
+
                     }
                     else{
                         ballStopped = false;
-                        paddle.setMoving(paddle.left);
                     }
                     break;
 
@@ -443,29 +483,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             return true;
         }
-
-        /*@Override
-        public boolean onTouchEvent(MotionEvent event) {
-
-            switch (event.getAction() & MotionEvent.ACTION_MASK){
-                case MotionEvent.ACTION_DOWN:
-                    paused = false;
-                    if(!touched) {
-                        touched = true;
-                        ballStopped = false;
-                        paddle.setMoving(paddle.left);
-                    }
-                    break;
-                case MotionEvent.ACTION_UP:
-
-                    break;
-            }
-
-
-                resume();
-
-            return true;
-        }*/
 
         // zastavení hry
         public void pause()
@@ -494,16 +511,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 paddle.setMoving(paddle.stop);
             }
 
-            /*if(event.values[1] > 1 && paddle.getPaddle().right > 50)
-            {
-                paddle.setMoving(paddle.right);
-            }
-
-            if(event.values[1] < -1 && (paddle.getPaddle().right > screenX -50 ))
-            {
-                paddle.setMoving(paddle.left);
-            }*/
-
             if(event.values[1] < -1 && paddle.getPaddle().left > 10)
             {
                 paddle.setMoving(paddle.left);
@@ -512,6 +519,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(event.values[1] > 1 && (paddle.getPaddle().right < screenX -10 ))
             {
                 paddle.setMoving(paddle.right);
+                Log.d("Angle",Float.toString(event.values[1]));
             }
         }
 
