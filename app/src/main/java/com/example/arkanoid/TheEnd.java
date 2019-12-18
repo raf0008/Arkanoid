@@ -38,16 +38,7 @@ public class TheEnd extends AppCompatActivity {
 
         boolean victory = getIntent().getBooleanExtra("victory", false);
 
-        if(victory) {
-            textView.setText("Victory");
-            menu.setVisibility(View.VISIBLE);
-            nextLevel.setVisibility(View.VISIBLE);
-        }
-        else {
-            textView.setText("Game Over");
-            menu.setVisibility(View.VISIBLE);
-            nextLevel.setVisibility(View.INVISIBLE);
-        }
+
 
         score = (TextView)findViewById(R.id.score);
         nextL = getIntent().getIntExtra("nextLevel",2);
@@ -56,11 +47,22 @@ public class TheEnd extends AppCompatActivity {
 
         int levelCount = getIntent().getIntExtra("levelCount",10);
 
-        if(nextL > levelCount){
-            nextLevel.setVisibility(View.INVISIBLE);
+        if(victory) {
+            textView.setText("Victory");
+            menu.setVisibility(View.VISIBLE);
+            nextLevel.setVisibility(View.VISIBLE);
+
+            if(nextL > levelCount){
+                nextLevel.setVisibility(View.INVISIBLE);
+            }
+            else {
+                nextLevel.setVisibility(View.VISIBLE);
+            }
         }
         else {
-            nextLevel.setVisibility(View.VISIBLE);
+            textView.setText("Game Over");
+            menu.setVisibility(View.VISIBLE);
+            nextLevel.setVisibility(View.INVISIBLE);
         }
 
     }

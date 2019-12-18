@@ -44,10 +44,18 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int selectedLevel;
     int levelCount;
 
+    Paddle paddle;
+    Ball ball;
+
+
+    float angle = 1;
+
     long startTime;
 
     boolean newGame;
-     //continuePref; // = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+     SharedPreferences continuePref; // = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+
+    SharedPreferences pref;
 
     //
 
@@ -67,6 +75,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
         // textView = (TextView)findViewById(R.id.text);
 
+
+        pref = getSharedPreferences("MyPref",0);
 
     }
 
@@ -115,8 +125,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         int lives = 3;
         int score = 0;
 
-        Paddle paddle;
-        Ball ball;
 
         Brick[] bricks = new Brick[200];
         int brickCount = 0;
@@ -170,8 +178,13 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             brickWidth = screenX / 8;
             brickHeight = screenY / 10;
 
+
             paddle = new Paddle(screenX, screenY);
             ball = new Ball(screenX, screenY);
+
+         //   if(!newGame){
+           //     ball = new Ball((int)pref.getFloat("Ball_left",0),screenY);
+         //   }
 
             createBricksAndRestart();
 
@@ -182,10 +195,10 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(newGame){
                 ball.reset(screenX, screenY);
             }
-            else{
+           // else{
 
 
-             //   SharedPreferences continuePref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+             //   if(continuePref.contains("ball_left")) Log.d("SHARED","BallLeft discovered");
              //   Log.d("SHARED", "Left" + continuePref.getFloat("BallLeft",a));
                // float left = continuePref.getFloat("BallLeft",200);
                /* ball.getBall().right = continuePref.getFloat("BallRight",0);
@@ -200,7 +213,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 paddle.getPaddle().top = continuePref.getFloat("PaddleTop",0);
                 paddle.getPaddle().bottom = continuePref.getFloat("PaddleBottom",0);*/
 
-            }
+          //  }
 
             int width = screenX / 10;
             int height = screenY / 12;
@@ -209,7 +222,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             int life;
 
 
-            selectedLevel = getIntent().getIntExtra("levelSelected",8);
+            selectedLevel = getIntent().getIntExtra("levelSelected",1);
 
        /*     SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
             SharedPreferences.Editor editor = pref.edit();
@@ -253,11 +266,12 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 if(!paused){
                     update();
 
-                    SharedPreferences continuePref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
-                    SharedPreferences.Editor editorC = continuePref.edit();
+                  //  SharedPreferences continuePref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
+              /*      SharedPreferences.Editor editorC = continuePref.edit();
 
                     editorC.putFloat("BallLeft",ball.getBall().left);
-                    editorC.putFloat("BallRight",ball.getBall().right);
+                    Log.d("SHARED","putFloat BallLEFT");
+            /*        editorC.putFloat("BallRight",ball.getBall().right);
                     editorC.putFloat("BallTop",ball.getBall().top);
                     editorC.putFloat("BallBottom",ball.getBall().bottom);
 
@@ -269,7 +283,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                     editorC.putFloat("PaddleTop",paddle.getPaddle().top);
                     editorC.putFloat("PaddleBottom",paddle.getPaddle().bottom);
 
-                    editorC.apply();
+                    editorC.apply();*/
                 }
 
                 draw();
@@ -308,6 +322,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             paused = true;
                             paddle.reset(screenX,screenY);
                             realScore = realScore + score + score * 100000 / ((int)(System.currentTimeMillis() - startTime));
+
+                     /*       if(pref.contains("Level")){
+                                if(pref.getInt("Level",0) < realScore){
+                                    pref.edit().remove("Level");
+                                    pref.edit().putInt("Level",realScore);
+                                    pref.edit().commit();
+                                }
+                                if(pref.getInt("MaxLevel",1) < selectedLevel){
+                                    pref.edit().remove("MaxLevel");
+                                    pref.edit().putInt("MaxLevel",selectedLevel);
+                                    pref.edit().commit();
+                                }
+                            }
+                            else {
+                                pref.edit().putInt("Level",realScore);
+                                pref.edit().putInt("MaxLevel",selectedLevel);
+                                pref.edit().commit();
+                            }*/
                             Intent intent = new Intent(getContext(), TheEnd.class);
                             intent.putExtra("victory",true);
                             intent.putExtra("score",realScore);
@@ -333,10 +365,34 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if (RectF.intersects(paddle.getPaddle(), ball.getBall())) {
                 playBounceSound();
                // if(ball.)
-                ball.setRandomXVelocity();
+                if(angle < 0){
+                    ball.setxVelocity(-ball.getyVel() * (float)(Math.sqrt(-angle))/((10+(-angle))/10));
+
+                //    ball.setxVelocity(-ball.getyVel()*(float)(Math.sqrt(-angle)));
+                    ball.setyVelocity(ball.getyVel()/(float)(Math.sqrt(-angle)));
+                }
+                else if(angle > 1){
+                    ball.setxVelocity(ball.getyVel() * (float)(Math.sqrt(angle))/((10+(angle))/10));
+
+                   // ball.setxVelocity(ball.getxVel()*(float)(Math.sqrt(angle)));
+                    ball.setyVelocity(ball.getyVel()/((float)(Math.sqrt(angle))));
+                    Log.d("Velocity angle", Float.toString(angle));
+                }
+
+//                ball.setxVelocity(-ball.getyVel() * (float)(Math.sqrt(-angle))/((10+(-angle))/10));
+
+              //  ball.setyVelocity(ball.getyVelocity()*angle);
+               // ball.setRandomXVelocity();
                 ball.reverseYVelocity();
+
+
+                Log.d("Velocity X", Float.toString(ball.getxVelocity()));
+                Log.d("Velocity Y", Float.toString(ball.getyVelocity()));
+
                 //ball.BallDirection(ball,paddle);
                 ball.clearObstacleY(paddle.getPaddle().top - 2);
+
+
             }
 
 
@@ -344,12 +400,15 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if (ball.getBall().bottom > screenY) {
                 playDestructionSound();
                 paused = true;
-                realScore = realScore + score + score * 100000 / ((int)(System.currentTimeMillis() - startTime));
+                realScore = score;
 
                 // hráč ztratí život, hra se stopne a obnoví se pozice míčku a paddlu
                 lives--;
                 ball.reset(screenX,screenY);
                 paddle.reset(screenX,screenY);
+
+                ball.setyVelocity(ball.getyVel());
+                ball.setxVelocity(ball.getxVel());
 
                 // pokud jsou životy rovny 0 tak se hra stopne a obnoví se vše.
                 if (lives == 0) {
@@ -362,8 +421,8 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             {
                 playBounceSound();
                 ball.reverseYVelocity();
-                ball.clearObstacleY(24);
-
+               // ball.clearObstacleY(24);
+                ball.clearObstacleY(30);
             }
 
             // levá zeď
@@ -508,17 +567,22 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
             if((event.values[1] >=-1 && event.values[1] <= 1) || (paddle.getPaddle().right > screenX -50) || (paddle.getPaddle().left < 50))
             {
+                angle = 1;
                 paddle.setMoving(paddle.stop);
             }
 
             if(event.values[1] < -1 && paddle.getPaddle().left > 10)
             {
                 paddle.setMoving(paddle.left);
+                angle = event.values[1];
+                Log.d("Angle",Float.toString(event.values[1]));
+
             }
 
             if(event.values[1] > 1 && (paddle.getPaddle().right < screenX -10 ))
             {
                 paddle.setMoving(paddle.right);
+                angle = event.values[1];
                 Log.d("Angle",Float.toString(event.values[1]));
             }
         }
@@ -556,6 +620,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause(){
         super.onPause();
+     //   pref.edit().putFloat("Ball_left",ball.getBall().left).apply();
+
+        Log.d("SHARED","pause");
         arkanoidView.pause();
     }
 }

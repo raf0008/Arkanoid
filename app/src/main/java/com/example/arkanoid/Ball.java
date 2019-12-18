@@ -12,12 +12,16 @@ public class Ball {
 
     private int ballHeight, ballWidth;
 
+    int xVel = 200;
+    int yVel = -400;
+
     public Ball(int screenX, int screenY){
         ballHeight = 30;
         ballWidth = ballHeight;
 
-        xVelocity = 200;
-        yVelocity = -400;
+
+        xVelocity = xVel;
+        yVelocity = yVel;
 
         positionX = screenX/2;
         positionY = screenY - 80;
@@ -36,10 +40,12 @@ public class Ball {
 
     public void reverseYVelocity(){
         yVelocity = -yVelocity;
+        yVel = -yVel;
     }
 
     public void reverseXVelocity(){
         xVelocity = -xVelocity;
+        xVel = -xVel;
     }
 
 
@@ -86,14 +92,25 @@ public class Ball {
     }
 
     public void setyVelocity(float yVelocity){
+
+        //this.yVelocity = yVel - yVelocity;
         this.yVelocity = yVelocity;
+    }
+
+    public float getxVel() {
+        return xVel;
+    }
+
+    public float getyVel(){
+
+        return yVel;
     }
 
     public float getxVelocity() {
         return xVelocity;
     }
 
-    public float getyVelocity(){
+    public float getyVelocity() {
         return yVelocity;
     }
 

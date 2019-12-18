@@ -12,10 +12,11 @@
         android:layout_width="139dp"
         android:layout_height="43dp"
         android:layout_marginStart="60dp"
-        android:layout_marginLeft="60dp"
         android:layout_marginBottom="24dp"
+        android:background="@drawable/transparent_bg_bordered_button"
         android:onClick="startGame"
         android:text="New Game"
+        android:textColor="@color/text_button_color_option"
         app:layout_constraintBottom_toTopOf="@+id/levels"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -28,6 +29,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="selectLevel"
         android:text="Levels"
+        android:textColor="@color/text_button_color_option"
+        android:background="@drawable/transparent_bg_bordered_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
 
@@ -40,6 +43,8 @@
         android:layout_marginBottom="91dp"
         android:onClick="continueGame"
         android:text="Continue"
+        android:textColor="@color/text_button_color_option"
+        android:background="@drawable/transparent_bg_bordered_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toEndOf="@+id/newGame" />
 
@@ -51,6 +56,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="highScoreView"
         android:text="High Score"
+        android:textColor="@color/text_button_color_option"
+        android:background="@drawable/transparent_bg_bordered_button"
         app:layout_constraintBottom_toTopOf="@+id/exit"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -63,6 +70,8 @@
         android:layout_marginBottom="24dp"
         android:onClick="exitApp"
         android:text="Exit"
+        android:textColor="@color/text_button_color_option"
+        android:background="@drawable/transparent_bg_bordered_button"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

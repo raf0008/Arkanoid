@@ -47,7 +47,7 @@ public class MainMenu extends AppCompatActivity {
         SharedPreferences pref = getApplicationContext().getSharedPreferences("MyPref", MODE_PRIVATE);
 
 
-        String maxLevel = pref.getString("maxLevel","1");
+        String maxLevel = pref.getString("maxLevel","0");
         int highestLevel = Integer.parseInt(maxLevel);
         if(highestLevel > 0){
             button_levels.setEnabled(true);
@@ -58,7 +58,7 @@ public class MainMenu extends AppCompatActivity {
 
         String score = pref.getString("score","0");
         int currentScore = Integer.parseInt(score);
-        currentScore = 1;
+
         if(numberOfLives > 0 && currentScore > 0){
             button_continue.setVisibility(View.VISIBLE);
             button_continue.setEnabled(true);
@@ -69,9 +69,10 @@ public class MainMenu extends AppCompatActivity {
         }
 
         String highScore = pref.getString("level1","0");
-        int highestScore = 1;// Integer.parseInt(highScore);
+        int highestScore = 0;// Integer.parseInt(highScore);
         if(highestScore > 0){
             button_highscore.setEnabled(true);
+
         }
     }
 

@@ -8,6 +8,7 @@ import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,8 @@ public class High_score extends AppCompatActivity{
 
     ScoreAdapter scoreAdapter;
 
+    SharedPreferences pref;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -53,21 +56,19 @@ public class High_score extends AppCompatActivity{
 
         Random rand = new Random();
         int nmb;
-        int levelCount = getIntent().getIntExtra("levelCount", 0);
+
+        pref = getSharedPreferences("MyPref",MODE_PRIVATE);
+
+        int levelCount = pref.getInt("MaxLevel",3);
+
+     //   int levelCount = getIntent().getIntExtra("levelCount", 0);
+
+        Log.d("SHARED",Float.toString(pref.getFloat("Ball_left",0)));
+
         for(int i=1;i < levelCount + 1; i++){
-            nmb = rand.nextInt(5000-300) +300;
-            scores.add(new Score("Level "+Integer.toString(i),"High Score: "+Integer.toString(nmb),"28. "+Integer.toString(i)+". 2019"));
+            nmb = rand.nextInt(5000)+300;
+            scores.add(new Score("Level "+Integer.toString(i),"High Score: "+Integer.toString(nmb),"17. 12. 2019"));
         }
-      /*  scores.add(new Score("Level 1","High Score: " + nmb,"28.0.222"));
-        scores.add(new Score("Level 2","122","28.0.2252"));
-        scores.add(new Score("Level 1","122","28.0.222"));
-        scores.add(new Score("Level 2","122","28.0.2252"));
-        scores.add(new Score("Level 1","122","28.0.222"));
-        scores.add(new Score("Level 2","122","28.0.2252"));
-        scores.add(new Score("Level 1","122","28.0.222"));
-        scores.add(new Score("Level 2","122","28.0.2252"));
-        scores.add(new Score("Level 9","122","28.0.222"));
-        scores.add(new Score("Level 12","122","28.0.2252"));*/
 
         scoreAdapter = new ScoreAdapter(this,scores);
         list.setAdapter(scoreAdapter);

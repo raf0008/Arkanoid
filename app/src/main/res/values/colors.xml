@@ -5,6 +5,8 @@
     <color name="colorAccent">#D81B60</color>
     <color name="transparent">#00000000</color>color>
     <color name="blue">#3BC0D4</color>
-    <color name="buttonOnClickBlue">#223BC0D4</color>color>
+    <color name="buttonOnClickBlue">#223BC0D4</color>
+    <color name="enableButtonFalse">#B7797979</color>
+    <color name="enableFalse">#282828</color>color>
 
 </resources>
