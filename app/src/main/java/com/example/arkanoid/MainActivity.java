@@ -44,20 +44,24 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     int selectedLevel;
     int levelCount;
 
+    int lives = 3;
+    int score = 0;
+
     Paddle paddle;
     Ball ball;
 
+    String level_map;
+    String current_level_map = "";
+    String loaded_map;
 
     float angle = 1;
 
     long startTime;
 
+    StringBuilder sb = new StringBuilder();
+
     boolean newGame;
      SharedPreferences continuePref; // = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
-
-    SharedPreferences pref;
-
-    //
 
     boolean touched = false;
 
@@ -73,10 +77,17 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         setContentView(arkanoidView);
         // setContentView(R.layout.activity_main);
 
-        // textView = (TextView)findViewById(R.id.text);
+
+        continuePref = getSharedPreferences("ContinuePref",0);
 
 
-        pref = getSharedPreferences("MyPref",0);
+        newGame = getIntent().getBooleanExtra("newGame", true);
+        if(newGame){
+            continuePref.edit().clear().apply();
+        }
+        else {
+            loaded_map = continuePref.getString("level_map","");
+        }
 
     }
 
@@ -122,8 +133,7 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
         long fps;
         long fpsTime;
 
-        int lives = 3;
-        int score = 0;
+
 
 
         Brick[] bricks = new Brick[200];
@@ -195,25 +205,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             if(newGame){
                 ball.reset(screenX, screenY);
             }
-           // else{
+            else {
+                ball.getBall().left = getIntent().getFloatExtra("ball_left",0);
+                ball.getBall().right = getIntent().getFloatExtra("ball_right",0);
+                ball.getBall().top = getIntent().getFloatExtra("ball_top",0);
+                ball.getBall().bottom = getIntent().getFloatExtra("ball_bottom",0);
+
+                paddle.getPaddle().left = getIntent().getFloatExtra("paddle_left",0);
+                paddle.getPaddle().right = getIntent().getFloatExtra("paddle_right",0);
+                paddle.getPaddle().top = getIntent().getFloatExtra("paddle_top",0);
+                paddle.getPaddle().bottom = getIntent().getFloatExtra("paddle_bottom",0);
+
+                paddle.setPositionX(paddle.getPaddle().left + ((paddle.getPaddle().right - paddle.getPaddle().left)/2));
+                paddle.setPositionY(paddle.getPaddle().top + ((paddle.getPaddle().bottom - paddle.getPaddle().top)/2));
 
 
-             //   if(continuePref.contains("ball_left")) Log.d("SHARED","BallLeft discovered");
-             //   Log.d("SHARED", "Left" + continuePref.getFloat("BallLeft",a));
-               // float left = continuePref.getFloat("BallLeft",200);
-               /* ball.getBall().right = continuePref.getFloat("BallRight",0);
-                ball.getBall().top = continuePref.getFloat("BallTop",0);
-                ball.getBall().bottom = continuePref.getFloat("BallBottom",0);
+                Log.d("SHARED","VELOCITY X in Main" + Float.toString(getIntent().getFloatExtra("ball_velocity_x",200)));
+                ball.setxVelocity(getIntent().getFloatExtra("ball_velocity_x",200));
+                ball.setyVelocity(getIntent().getFloatExtra("ball_velocity_y",-400));
 
-                ball.setxVelocity(continuePref.getFloat("BallVelocityX",0));
-                ball.setyVelocity(continuePref.getFloat("BallVelocityY",0));
-
-                paddle.getPaddle().left = continuePref.getFloat("PaddleLeft",0);
-                paddle.getPaddle().right = continuePref.getFloat("PaddleRight",0);
-                paddle.getPaddle().top = continuePref.getFloat("PaddleTop",0);
-                paddle.getPaddle().bottom = continuePref.getFloat("PaddleBottom",0);*/
-
-          //  }
+                lives = getIntent().getIntExtra("lives",3);
+                score = getIntent().getIntExtra("score",0);
+                current_level_map = getIntent().getStringExtra("level_map");
+            }
 
             int width = screenX / 10;
             int height = screenY / 12;
@@ -230,20 +244,32 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             editor.putInt("lastSelectedLevel",selectedLevel);
             editor.apply();*/
 
+       if(newGame){
+           Map mapa = new Map();
+           List<String> newMap = mapa.getMap();
+           levelCount = newMap.size();
 
-            String map; // = "000200200000111111000114114110111111111110100001010001001000";
+           level_map = newMap.get(selectedLevel-1);
+       }
+       else {
+           level_map = current_level_map;
+       }
 
-            Map mapa = new Map();
-            List<String> newMap = mapa.getMap();
-            levelCount = newMap.size();
-
-            map = newMap.get(selectedLevel-1);
-
+           /* if(continuePref.contains("level_map")&&!newGame){
+                level_map = continuePref.getString("level_map","");
+            }
+*/
+/*
+           Log.d("MAPS","L:"+level_map);
+           if(loaded_map != ""){
+               loaded_map = level_map;
+           }
+*/
             brickCount = 0;
             for (int column = 0; column < 10; column++) {
                 for (int row = 0; row < 6; row++) {
 
-                    life = Integer.parseInt(Character.toString(map.charAt((row*10)+column)));
+                    life = Integer.parseInt(Character.toString(level_map.charAt((row*10)+column)));
                     brickLifeCount = brickLifeCount + life;
                     bricks[brickCount] = new Brick(row, column, width, height, life);
                     if(life == 0) bricks[brickCount].setInvisible();
@@ -265,25 +291,6 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
 
                 if(!paused){
                     update();
-
-                  //  SharedPreferences continuePref = getApplicationContext().getSharedPreferences("MyContinuePref", MODE_PRIVATE);
-              /*      SharedPreferences.Editor editorC = continuePref.edit();
-
-                    editorC.putFloat("BallLeft",ball.getBall().left);
-                    Log.d("SHARED","putFloat BallLEFT");
-            /*        editorC.putFloat("BallRight",ball.getBall().right);
-                    editorC.putFloat("BallTop",ball.getBall().top);
-                    editorC.putFloat("BallBottom",ball.getBall().bottom);
-
-                    editorC.putFloat("BallVelocityX",ball.getxVelocity());
-                    editorC.putFloat("BallVelocityY",ball.getyVelocity());
-
-                    editorC.putFloat("PaddleLeft",paddle.getPaddle().left);
-                    editorC.putFloat("PaddleRight",paddle.getPaddle().right);
-                    editorC.putFloat("PaddleTop",paddle.getPaddle().top);
-                    editorC.putFloat("PaddleBottom",paddle.getPaddle().bottom);
-
-                    editorC.apply();*/
                 }
 
                 draw();
@@ -302,16 +309,19 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
             }
 
 
-            String s = "";
-            for (int i = 0; i < brickCount; i++) {
-                if (bricks[i].getVisibility()) {
-                    if (RectF.intersects(bricks[i].getBrick(), ball.getBall())) {
+
+            //for (int i = 0; i < brickCount; i++) {
+            for (int row = 0; row < 6; row++) {
+                for (int column = 0; column < 10; column++) {
+
+                if (bricks[((row*10)+column)].getVisibility()) {
+                    if (RectF.intersects(bricks[((row*10)+column)].getBrick(), ball.getBall())) {
 
                         //SharedPreferences StringBuilder(lives of bricks --> map)
 
                         playBounceSound();
-                        if(bricks[i].getLives() == 1) bricks[i].setInvisible();
-                        else bricks[i].lostLife();
+                        if(bricks[((row*10)+column)].getLives() == 1) {bricks[((row*10)+column)].setInvisible();bricks[((row*10)+column)].lostLife();}
+                        else bricks[((row*10)+column)].lostLife();
 
 
 
@@ -323,34 +333,29 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                             paddle.reset(screenX,screenY);
                             realScore = realScore + score + score * 100000 / ((int)(System.currentTimeMillis() - startTime));
 
-                     /*       if(pref.contains("Level")){
-                                if(pref.getInt("Level",0) < realScore){
-                                    pref.edit().remove("Level");
-                                    pref.edit().putInt("Level",realScore);
-                                    pref.edit().commit();
-                                }
-                                if(pref.getInt("MaxLevel",1) < selectedLevel){
-                                    pref.edit().remove("MaxLevel");
-                                    pref.edit().putInt("MaxLevel",selectedLevel);
-                                    pref.edit().commit();
-                                }
-                            }
-                            else {
-                                pref.edit().putInt("Level",realScore);
-                                pref.edit().putInt("MaxLevel",selectedLevel);
-                                pref.edit().commit();
-                            }*/
                             Intent intent = new Intent(getContext(), TheEnd.class);
                             intent.putExtra("victory",true);
                             intent.putExtra("score",realScore);
+                            intent.putExtra("current_level", selectedLevel);
                             intent.putExtra("nextLevel",selectedLevel+1);
-                            intent.putExtra("levelCount",levelCount);
+                            intent.putExtra("level_count",levelCount);
                             startActivity(intent);
                         }
                     }
+
+
                 }
-                s += bricks[i].getLives();
+                sb.append(bricks[((row)+column*6)].getLives());
+                }
+                //current_level_map += bricks[i].getLives();
             }
+
+            current_level_map = sb.toString();
+
+            sb.delete(0,sb.length());
+
+            Log.d("MAPS","C:"+current_level_map);
+            Log.d("MAPS","R:"+level_map);
 
        //     editorC.putString("continueMap",s);
        //     editorC.apply();
@@ -508,7 +513,9 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
                 if (lives <= 0) {
                     Intent intent = new Intent(getContext(), TheEnd.class);
                     intent.putExtra("victory", false);
+                    intent.putExtra("current_level",selectedLevel);
                     intent.putExtra("score",score);
+                    intent.putExtra("level_count",levelCount);
                     startActivity(intent);
 
                 }
@@ -620,7 +627,23 @@ public class MainActivity extends AppCompatActivity implements SensorEventListen
     @Override
     protected void onPause(){
         super.onPause();
-     //   pref.edit().putFloat("Ball_left",ball.getBall().left).apply();
+        continuePref.edit().putFloat("Ball_left",ball.getBall().left).apply();
+        continuePref.edit().putFloat("Ball_right",ball.getBall().right).apply();
+        continuePref.edit().putFloat("Ball_top",ball.getBall().top).apply();
+        continuePref.edit().putFloat("Ball_bottom",ball.getBall().bottom).apply();
+
+        continuePref.edit().putFloat("Ball_velocity_x",ball.getxVelocity()).apply();
+        continuePref.edit().putFloat("Ball_velocity_y",ball.getyVelocity()).apply();
+
+        continuePref.edit().putFloat("Paddle_left",paddle.getPaddle().left).apply();
+        continuePref.edit().putFloat("Paddle_right",paddle.getPaddle().right).apply();
+        continuePref.edit().putFloat("Paddle_top",paddle.getPaddle().top).apply();
+        continuePref.edit().putFloat("Paddle_bottom",paddle.getPaddle().bottom).apply();
+
+        continuePref.edit().putInt("Lives",lives).apply();
+        continuePref.edit().putString("Level_map",current_level_map).apply();
+        continuePref.edit().putInt("Current_level",selectedLevel).apply();
+        continuePref.edit().putInt("Score",score).apply();
 
         Log.d("SHARED","pause");
         arkanoidView.pause();

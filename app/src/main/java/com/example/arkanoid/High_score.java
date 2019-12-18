@@ -36,7 +36,7 @@ public class High_score extends AppCompatActivity{
 
     ScoreAdapter scoreAdapter;
 
-    SharedPreferences pref;
+    SharedPreferences scorePref;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,23 +51,28 @@ public class High_score extends AppCompatActivity{
         Typeface custom_font = Typeface.createFromAsset(getAssets(),  "fonts/Arka_solid.ttf");
         highScoreText.setTypeface(custom_font);
 
+        scorePref = getSharedPreferences("ScorePref",0);
+        int sc = scorePref.getInt("Level1",0);
+
+        Log.d("LEVELS","Level 1 in HIGH SCORE : " + Integer.toString(sc));
+
         list = (ListView)findViewById(R.id.list);
         ArrayList<Score> scores = new ArrayList<>();
 
         Random rand = new Random();
         int nmb;
 
-        pref = getSharedPreferences("MyPref",MODE_PRIVATE);
+        int levelCount = scorePref.getInt("Level_count",1);
 
-        int levelCount = pref.getInt("MaxLevel",3);
-
-     //   int levelCount = getIntent().getIntExtra("levelCount", 0);
-
-        Log.d("SHARED",Float.toString(pref.getFloat("Ball_left",0)));
+        Log.d("LEVELS","Level Count in HIGH SCORE: " + levelCount);
 
         for(int i=1;i < levelCount + 1; i++){
-            nmb = rand.nextInt(5000)+300;
-            scores.add(new Score("Level "+Integer.toString(i),"High Score: "+Integer.toString(nmb),"17. 12. 2019"));
+            nmb = scorePref.getInt("Level"+Integer.toString(i),0);//rand.nextInt(5000)+300;
+            Log.d("LEVELS","LEVEL" + (i) + " SCORE: " + nmb);
+            if(nmb > 0){
+                scores.add(new Score("Level "+Integer.toString(i),"High Score: "+Integer.toString(nmb),"17. 12. 2019"));
+                Log.d("LEVELS","LEVEL" + (i) + " SCORE: " + nmb);
+            }
         }
 
         scoreAdapter = new ScoreAdapter(this,scores);

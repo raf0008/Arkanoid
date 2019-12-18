@@ -3,6 +3,7 @@ package com.example.arkanoid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Color;
 import android.graphics.Point;
 import android.os.Bundle;
@@ -27,6 +28,7 @@ public class LevelSelection extends AppCompatActivity {
     int screenX, screenY;
 
     int margin;
+    int max_level;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,6 +38,8 @@ public class LevelSelection extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
         setContentView(R.layout.activity_level_selection);
 
+        SharedPreferences scorePref = getSharedPreferences("ScorePref",0);
+        max_level = scorePref.getInt("Max_level",0);
 
         //SharedPreferences LEVEL count ze souboru
         levelCount = 100;
@@ -71,7 +75,7 @@ public class LevelSelection extends AppCompatActivity {
         table1.setLayoutParams(tableRowParams);
         table2.setLayoutParams(tableRowParams);
 
-        for(int i=0;i<levels.length;i++){
+        for(int i=0;i<max_level;i++){
             levels[i] = new Button(this);
             levels[i].setTag(i+1);
             levels[i].setText(Integer.toString(i+1));

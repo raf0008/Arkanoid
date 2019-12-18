@@ -3,6 +3,7 @@ package com.example.arkanoid;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.graphics.Typeface;
 import android.os.Bundle;
 import android.view.View;
@@ -55,6 +56,13 @@ public class HomePage extends AppCompatActivity {
 
         animation.setRepeatCount(1);
         taptocontinue.setAnimation(animation);
+
+
+      /*  SharedPreferences continuePref = getSharedPreferences("ContinuePref",0);
+        continuePref.edit().clear().apply();
+
+        SharedPreferences scorePref = getSharedPreferences("ScorePref",0);
+        scorePref.edit().clear().apply();*/
     }
 
     public void MainMenu(View view){

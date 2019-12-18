@@ -62,4 +62,11 @@ public class Paddle {
         paddle.bottom = positionY + height;
     }
 
+    public void setPositionX(float positionX){
+        this.positionX = positionX;
+    }
+
+    public void setPositionY(float positionY){
+        this.positionY = positionY;
+    }
 }
